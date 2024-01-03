@@ -1,9 +1,22 @@
 // import { useState, useEffect } from 'react'
 import styled from "styled-components";
+import {useContractRead} from "@starknet-react/core";
+import abi from '../../contract/nft';
+const nftAddress = '0x005a643907b9a4bc6a55e9069c4fd5fd1f5c79a22470690f75556c4736e34426'
 export default function playerRanking(){
+    const { data, isError, isLoading, error } = useContractRead({
+        functionName: "balanceOf",
+        args: ["0x05643Ead2fc08d7C5F2b70CD151D9565a070010f348Ac49446Aa6C193a2d8323"],
+        abi:abi,
+        address: nftAddress,
+        watch: true,
+    });
     const players  = [{ name: '玩家1', score: 100 },
         { name: '玩家2', score: 90 },
         { name: '玩家3', score: 80 },]; // 这里是您的列表项
+    if (isLoading) return <div>Loading ...</div>;
+    if (isError || !data) return <div>{error?.message}</div>;
+
     return <ListContainer>
         <RankingList>
             {
